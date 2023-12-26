@@ -125,9 +125,9 @@ def ICASAR(n_comp, spatial_data = None, temporal_data = None, figures = "window"
     import pdb
     # internal functions
     from icasar.blind_signal_separation import PCA_meg2
-    from icasar.aux import  bss_components_inversion, maps_tcs_rescale, r2_to_r3, r2_arrays_to_googleEarth
-    from icasar.aux import plot_pca_variance_line, plot_temporal_signals, two_spatial_signals_plot
-    from icasar.aux import prepare_point_colours_for_2d, prepare_legends_for_2d, create_all_ifgs, create_cumulative_ifgs, signals_to_master_signal_comparison, plot_source_tc_correlations
+    from icasar.aux1 import  bss_components_inversion, maps_tcs_rescale, r2_to_r3, r2_arrays_to_googleEarth
+    from icasar.aux1 import plot_pca_variance_line, plot_temporal_signals, two_spatial_signals_plot
+    from icasar.aux1 import prepare_point_colours_for_2d, prepare_legends_for_2d, create_all_ifgs, create_cumulative_ifgs, signals_to_master_signal_comparison, plot_source_tc_correlations
     from icasar.aux2 import plot_2d_interactive_fig, baseline_from_names, update_mask_sources_ifgs
     
     
@@ -623,7 +623,7 @@ def LiCSBAS_to_ICASAR(LiCSBAS_out_folder, filtered = False, figures = False, n_c
     import pdb
     
     from icasar.aux2 import add_square_plot
-    from icasar.aux import col_to_ma
+    from icasar.aux1 import col_to_ma
     
     
 
@@ -958,7 +958,7 @@ def update_mask_sources_ifgs(mask_sources, sources, mask_ifgs, ifgs):
     """
     import numpy as np
     import numpy.ma as ma
-    from icasar.aux import col_to_ma
+    from icasar.aux1 import col_to_ma
 
         
     
@@ -1227,7 +1227,7 @@ def bootstrap_ICA(X, n_comp, bootstrap = True, ica_param = (1e-4, 150),
     """
     import numpy as np
     from icasar.blind_signal_separation import PCA_meg2, fastica_MEG
-    from icasar.aux import  maps_tcs_rescale
+    from icasar.aux1 import  maps_tcs_rescale
     
     n_loop_max = 1000                                                               # when trying to make bootstrapped samples, if one can't be found after this many attempts, raise an error.  Best left high.  
     
@@ -1322,7 +1322,7 @@ def sources_list_to_r2_r3(sources, mask = None):
     """
     import numpy as np
     import numpy.ma as ma
-    from icasar.aux import col_to_ma
+    from icasar.aux1 import col_to_ma
     
     
     n_converge_needed = len(sources)

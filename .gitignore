@@ -3,3 +3,7 @@ __pycache__/
 example_spatial_02_outputs/FastICA_results.pkl
 n_comp_5/*
 */FastICA_results.pkl
+
+.idea
+example*/
+data/

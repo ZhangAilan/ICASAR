@@ -327,7 +327,7 @@ def plot_source_tc_correlations(sources, mask, dem = None, dem_to_ic_comparisons
     """
     import numpy as np
     import matplotlib.pyplot as plt
-    from icasar.aux import col_to_ma
+    from icasar.aux1 import col_to_ma
     from icasar.aux2 import remappedColorMap, truncate_colormap
 
     n_sources = sources.shape[0]
@@ -452,7 +452,7 @@ def plot_source_tc_correlations(sources, mask, dem = None, dem_to_ic_comparisons
 
 
 
-def visualise_ICASAR_inversion(interferograms, sources, time_courses, mask, n_data = 10):
+def visualise_ICASAR_inversion(interferograms, sources, time_courses, mask, n_data = 10,png_path = './',figures = "window", fig_title = None):
     """Given interferograms (that don't need to be mean centered), visualise how the 
     BSS recontruction (A@S) can be used to reconstruct them.  
     Inputs:
@@ -502,6 +502,18 @@ def visualise_ICASAR_inversion(interferograms, sources, time_courses, mask, n_da
         plot_ifg(interferograms_mc[data_n,], axes[0,data_n], mask, vmin, vmax)
         plot_ifg(interferograms_ICASAR[data_n,], axes[1,data_n], mask, vmin, vmax)
         plot_ifg(residual[data_n,], axes[2,data_n], mask, vmin, vmax)
+    
+    fig.tight_layout()
+    if figures=='window':
+        pass
+    elif figures=='png':
+        fig.savefig(f"{png_path}/{fig_title}.png")
+        plt.close()
+    elif figures=='png+window':
+        fig.savefig(f"{png_path}/{fig_title}.png")
+    else:
+        pass
+    plt.close()
 
 
 
