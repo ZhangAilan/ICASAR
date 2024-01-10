@@ -37,7 +37,7 @@ for date_range in converted_dates:
     start_date,end_date=date_range.split('_')   #提取日期范围的起始日期和结束日期
     unw_name=f"geo_{start_date}-{end_date}.unw"
     unw_names.append(unw_name)
-
+print(unw_names)
 
 WIDTH=  235
 FILE_LENGTH=  207
