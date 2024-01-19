@@ -1,8 +1,18 @@
+#------------------------------------------------------------------
+# Author: ZhangYuehao
+# Email: yuehaozhang@njtech.edu.cn
+# Zhihu: https://www.zhihu.com/people/bu-meng-cheng-kong-46/posts
+# GitHub: https://github.com/ZhangAilan
+#-------------------------------------------------------------------
+# Date: 2024/01/19
+# Function:
+#   ICASAR for the Synthetic data with APS corrected
+#-------------------------------------------------------------------
 import pickle
 import numpy as np
 
-filepath_displacement='data/Synthetic_Fault/temp_data/displacement_r2.pkl'
-filepath_tbaselines='data/Synthetic_Fault/temp_data/tbaseline_info.pkl'
+filepath_displacement='data/Synthetic_Fault/temp_corrected/displacement_r2.pkl'
+filepath_tbaselines='data/Synthetic_Fault/temp_corrected/tbaseline_info.pkl'
 with open(filepath_displacement, 'rb') as f:
     displacement_r2 = pickle.load(f)
 with open(filepath_tbaselines,'rb') as f:
@@ -31,9 +41,9 @@ ICASAR_settings = {"n_comp": 5,  # number of components to recover with ICA (ie 
                    "tsne_param": (30, 12),  # (perplexity, early_exaggeration)
                    "ica_param": (1e-2, 150),  # (tolerance, max iterations)
                    "hdbscan_param": (100, 10), # (min_cluster_size, min_samples) Discussed in more detail in Mcinnes et al. (2017). min_cluster_size sets the smallest collection of points that can be considered a cluster. min_samples sets how conservative the clustering is. With larger values, more points will be considered noise.
-                   "out_folder": Path('example_spatial_03_outputs_sICA_inc'),  # outputs will be saved here
+                   "out_folder": Path('example_spatial_03_APS_all'),  # outputs will be saved here
                    "load_fastICA_results": True, # If all the FastICA runs already exisit, setting this to True speeds up ICASAR as they don't need to be recomputed.
-                   "ifgs_format": 'inc', # small signals are hard for ICA to extact from time series, so make it easier by creating all possible long temporal baseline ifgs from the incremental data.
+                   "ifgs_format": 'all', # small signals are hard for ICA to extact from time series, so make it easier by creating all possible long temporal baseline ifgs from the incremental data.
                    'sica_tica': 'sica',  # controls whether spatial sources or time courses are independent.
                    'max_n_all_ifgs': 1000,
                    'label_sources': True, # ICASAR will try to identify which sources are deformation / topo. correlated APS / turbulent Aps.
@@ -63,8 +73,10 @@ plot_mixtures_ifgs(displacement_r2['incremental'],displacement_r2['mask'],file_p
 #need to change the figure title
 fig_title_01='deformation_ifgs'
 fig_title_02='topo_cor_APS_ifgs'
-recover_signal_timeseries_plot(S_ica,A_ica,0,mask,file_path,fig_title_01,phUnw_mean)
-#recover_signal_timeseries_plot(S_ica,A_ica,3,mask,file_path,fig_title_02,phUnw_mean)
+recover_signal_timeseries_plot(S_ica,A_ica,2,mask,file_path,fig_title_01,phUnw_mean)
+#recover_signal_timeseries_plot(S_ica,A_ica,2,mask,file_path,fig_title_02,phUnw_mean)
 
 #use the recovered signal to calculate the deformation velocity by stacking insar
-deformation_velocity=stacking_insar(S_ica,A_ica,0,mask,file_path,time_baselines_cum,phUnw_mean)
+deformation_velocity=stacking_insar(S_ica,A_ica,2,mask,file_path,time_baselines_cum,phUnw_mean)
+
+print("Done!!!")
