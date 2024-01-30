@@ -28,7 +28,7 @@ def recover_signal_timeseries_plot(sources,time_courses,source_number,mask,file_
             row=i//num_cols
             col=i%num_cols
             ax=axes[row,col]
-            ax.imshow(col_to_ma(ifgs_sources[i,:],mask))
+            ax.imshow(col_to_ma(ifgs_sources[i,:],mask),cmap='jet') # Set the colormap to 'jet'
             ax.set_yticks([])
             ax.set_xticks([])
         else:
@@ -42,7 +42,7 @@ def recover_signal_timeseries_plot(sources,time_courses,source_number,mask,file_
     plt.close()
 
 
-def plot_mixtures_ifgs(phUnw,mask,file_path):
+def plot_mixtures_ifgs(phUnw, mask, file_path):
     '''
     Plot the original mixture interferogram sequence.
     '''
@@ -60,7 +60,7 @@ def plot_mixtures_ifgs(phUnw,mask,file_path):
             row = i // num_cols  # 计算子图所在的行
             col = i % num_cols  # 计算子图所在的列
             ax = axes[row, col]
-            ax.imshow(col_to_ma(phUnw[i, :], mask))
+            ax.imshow(col_to_ma(phUnw[i, :], mask), cmap='jet')  # Set the colormap to 'jet'
             ax.set_xticks([])
             ax.set_yticks([])
         else:
@@ -75,7 +75,7 @@ def plot_mixtures_ifgs(phUnw,mask,file_path):
     plt.close()
 
 
-def stacking_insar(sources,time_courses,source_number,mask,file_path,time_baselines,phUnw_mean):
+def stacking_insar(sources, time_courses, source_number, mask, file_path, time_baselines, phUnw_mean,fig_title):
     '''
     Use the stacking InSAR method to calculate the average surface deformation velocity and plot the average surface deformation velocity map for the region.
     :param sources: Spatial components of the recovered sources.
@@ -88,29 +88,30 @@ def stacking_insar(sources,time_courses,source_number,mask,file_path,time_baseli
     import matplotlib.pyplot as plt
     from icasar.aux1 import col_to_ma
 
-    A=time_courses[:,source_number]
-    A=np.reshape(A,(len(A),1))
-    S=sources[source_number:source_number+1]
-    ifgs_sources=A@S+phUnw_mean
+    A = time_courses[:, source_number]
+    A = np.reshape(A, (len(A), 1))
+    S = sources[source_number:source_number + 1]
+    ifgs_sources = A @ S + phUnw_mean
 
-    #inc tbaselines
-    time_baselines_inc=np.diff(time_baselines)
+    # inc tbaselines
+    time_baselines_inc = np.diff(time_baselines)
+    time_baselines_inc=time_baselines_inc/365.25
 
-    #stacking InSAR
-    ph_sum=[0 for _ in range(len(ifgs_sources[0]))]
-    t_sum=0
-    for i,time_baseline in enumerate(time_baselines_inc):
-        ph_sum+=time_baseline*ifgs_sources[i]
-        t_sum=time_baseline**2
-    ph_rate=ph_sum/t_sum
-    deformation_velocity=ph_rate*(-0.056/(4*np.pi))*1000
-    deformation_velocity= np.array(deformation_velocity).reshape(1, -1)
+    # stacking InSAR
+    ph_sum = [0 for _ in range(len(ifgs_sources[0]))]
+    t_sum = 0
+    for i, time_baseline in enumerate(time_baselines_inc):
+        ph_sum += time_baseline * ifgs_sources[i]
+        t_sum += time_baseline ** 2
+    ph_rate = ph_sum / t_sum
+    deformation_velocity = ph_rate * (-0.056 / (4 * np.pi)) * 1000 
+    deformation_velocity = np.array(deformation_velocity).reshape(1, -1)
 
-    fig_title='deformation_velocity'
+    #fig_title = 'deformation_velocity'
     fig, ax = plt.subplots(figsize=(10, 10))
-    vmin=np.min(deformation_velocity)
-    vmax=np.max(deformation_velocity)
-    w=ax.matshow(col_to_ma(deformation_velocity[0,:],mask),vmin=vmin,vmax=vmax)
+    vmin = np.min(deformation_velocity)
+    vmax = np.max(deformation_velocity)
+    w = ax.matshow(col_to_ma(deformation_velocity[0, :], mask), vmin=vmin, vmax=vmax, cmap='jet')  # Set the colormap to 'jet'
     axin = ax.inset_axes([0, -0.06, 1, 0.05])
     fig.colorbar(w, cax=axin, orientation='horizontal')
     ax.set_xticks([])

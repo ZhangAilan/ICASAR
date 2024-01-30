@@ -537,7 +537,7 @@ def ICASAR(n_comp, spatial_data = None, temporal_data = None, figures = "window"
 
         if sica_tica == 'sica':
             if label_sources:
-                return S_ica, A_ica_dc, source_residuals, Iq_sorted, n_clusters, S_all_info, X_mean, label_sources_output
+                return S_ica, A_ica_dc, source_residuals, Iq_sorted, n_clusters, S_all_info, X_mean, label_sources_output,S_pca,A_pca_dc
             else:
                 return S_ica, A_ica_dc, source_residuals, Iq_sorted, n_clusters, S_all_info, X_mean
         elif sica_tica == 'tica':

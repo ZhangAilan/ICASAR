@@ -4,8 +4,8 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 
-filepath_displacement='D:\\ML_InSAR\\data\\阿尔金断裂带\\temp_date\\displacement_r2.pkl'
-filepath_tbaselines='D:\\ML_InSAR\\data\\阿尔金断裂带\\temp_date\\tbaseline_info.pkl'
+filepath_displacement='data/Altyn_Tagh_Fault/temp_data/displacement_r2.pkl'
+filepath_tbaselines='data/Altyn_Tagh_Fault/temp_data/tbaseline_info.pkl'
 with open(filepath_displacement, 'rb') as f:
     displacement_r2 = pickle.load(f)
 with open(filepath_tbaselines,'rb') as f:
@@ -16,7 +16,7 @@ mask=displacement_r2['mask']
 
 #ICASAR部分
 from pathlib import Path
-from icasar.icasar_main import ICASAR
+from icasar.icasar_funcs import ICASAR
 
 
                          #%% Example 1: sICA after creating all interferograms
@@ -41,7 +41,7 @@ ICASAR_settings = {"n_comp": 5,  # number of components to recover with ICA (ie 
                    'max_n_all_ifgs': 1000,
                    'label_sources': True, # ICASAR will try to identify which sources are deformation / topo. correlated APS / turbulent Aps.
                    "figures": "png+window"}  # if png, saved in a folder as .png.  If window, open as interactive matplotlib figures,if 'png+window', both.default is "window" as 03_clustering_and_manifold is interactive.
-S_ica, A_ica, x_train_residual_ts, Iq, n_clusters, S_all_info, phUnw_mean, sources_labels = ICASAR(spatial_data=spatial_data, **ICASAR_settings)
+S_ica, A_ica, x_train_residual_ts, Iq, n_clusters, S_all_info, phUnw_mean, sources_labels,S_pca,A_pca  = ICASAR(spatial_data=spatial_data, **ICASAR_settings)
 #print("\nS_ica:\n",S_ica)
 #print("\nA_ica:\n",A_ica)
 
@@ -51,8 +51,8 @@ print('重建干涉图与原始干涉图之间的RMSE:',x_train_residual_ts)
 
 
                                               #%%% 结果判读部分
-from icasar.icasar_aux import visualise_ICASAR_inversion
-from icasar.icasar_aux3 import recover_signal_timeseries_plot,plot_mixtures_ifgs,stacking_insar
+from icasar.aux1 import visualise_ICASAR_inversion
+from icasar.aux3 import recover_signal_timeseries_plot,plot_mixtures_ifgs,stacking_insar
 file_path=ICASAR_settings['out_folder']
 
 #原始干涉图与恢复的干涉图进行对比 We can also visualise how interferograms are fit using the learned components (ICs, contained in S_best)

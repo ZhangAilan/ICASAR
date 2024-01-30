@@ -472,7 +472,7 @@ def visualise_ICASAR_inversion(interferograms, sources, time_courses, mask, n_da
     def plot_ifg(ifg, ax, mask, vmin, vmax):
         """
         """
-        w = ax.matshow(col_to_ma(ifg, mask), interpolation ='none', aspect = 'equal', vmin = vmin, vmax = vmax)                                                   # 
+        w = ax.matshow(col_to_ma(ifg, mask), interpolation ='none', aspect = 'equal', vmin = vmin, vmax = vmax,cmap='jet')                                                   # 
         axin = ax.inset_axes([0, -0.06, 1, 0.05])
         fig.colorbar(w, cax=axin, orientation='horizontal')
         ax.set_yticks([])

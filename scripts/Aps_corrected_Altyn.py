@@ -15,13 +15,13 @@ import os
 import pickle
 import re
 
-file_path_corrected='data/Altyn_Tagh_Fault/aps_data/CorrectedIfgs-model6-defoFlag1-wetFlag1-hydroFlag1-iteraNum1-solver2-ueFixMethod0-weightScheme1-shortBt60-shortBtRelax500'
+file_path_corrected='D:\\ICASAR\\data\\Altyn_Tagh_Fault\\aps_data\\CorrectedIfgs-model6-defoFlag1-wetFlag1-hydroFlag1-iteraNum1-solver2-ueFixMethod0-weightScheme1-shortBt60-shortBtRelax500'
 file_path="data/Altyn_Tagh_Fault/raw_data/unw-coh0.5-decimated-withUECorrectedAuto"
 save_displacemet_r2_path="data/Altyn_Tagh_Fault/temp_correct/displacement_r2.pkl"
 save_tbaseline_info_path="data/Altyn_Tagh_Fault/temp_correct/tbaseline_info.pkl"
 dem_rsc_path=os.path.join(file_path,"EQA.dem.rsc")
 dem_path=os.path.join(file_path,"EQA.dem")
-ifg_filelist_path="data/Altyn_Tagh_Fault/aps_data/CorrectedIfgs-model6-defoFlag1-wetFlag1-hydroFlag1-iteraNum1-solver2-ueFixMethod0-weightScheme1-shortBt60-shortBtRelax500/ifg_filelist_shortBt.txt"
+ifg_filelist_path=os.path.join(file_path_corrected,"ifg_filelist_shortBt.txt")
 
 #读取ifgs_file中的日期信息
 with open(ifg_filelist_path,'r') as f:
@@ -30,6 +30,8 @@ epoch_master_slave_dates_info = re.findall(r'\b\d{8}\b', ifg_filelist)
 #去重并排序
 epoch_master_slave_dates_info=sorted(list(set(epoch_master_slave_dates_info)))
 epoch_master_slave_dates_info.insert(0,'20170404')
+elements_to_remove=['20170615','20170802','20170814','20171212','20171224','20180117','20180129','20180306','20180610','20180622','20180704','20180902','20180914','20181008','20181101','20181207','20181231','20190313','20190325','20190524','20190804','20191108','20191120','20191202','20200119','20200212','20200307','20200319','20200412','20200506','20200518','20200611','20200705','20200915','20210101']
+epoch_master_slave_dates_info=[i for i in epoch_master_slave_dates_info if i not in elements_to_remove]
 epoch_master_slave_dates_info=np.array(epoch_master_slave_dates_info).reshape(-1,1).astype(int)
 
 #转换日期格式
@@ -47,7 +49,7 @@ for i in range(len(sar_epoch)-1):
 unw_names=[]
 for date_range in converted_dates:
     start_date,end_date=date_range.split('_')   #提取日期范围的起始日期和结束日期
-    unw_name=f"geo_{start_date}-{end_date}.unw.APScorrected"
+    unw_name=f"geo_{start_date}-{end_date}.UEcorrected.APScorrected"
     unw_names.append(unw_name)
 print(unw_names)
 print(len(unw_names))

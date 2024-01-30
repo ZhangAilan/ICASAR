@@ -16,7 +16,7 @@ from pathlib import Path
 
 import icasar
 from icasar.icasar_funcs import ICASAR
-from icasar.aux import col_to_ma, r2_to_r3
+from icasar.aux1 import col_to_ma, r2_to_r3
 
 def generate_random_ifg_dates(n_dates):
     """A function to generate random synthetic interferogram dates
