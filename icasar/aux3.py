@@ -10,16 +10,21 @@ def recover_signal_timeseries_plot(sources,time_courses,source_number,mask,file_
     import matplotlib.pyplot as plt
     import numpy as np
     from icasar.aux1 import col_to_ma
+    import pickle
 
     A=time_courses[:,source_number]
     A = np.reshape(A, (len(A), 1))
     S=sources[source_number:source_number+1]
     ifgs_sources=A@S+phUnw_mean
-    #print("\nA:\n",A)
-    #print("\nS:\n",S)
-    #print("\nifgs_sources:\n",ifgs_sources)
-
+    # print("\nA:\n",A)
+    # print("\nS:\n",S)
+    # print("\nifgs_sources:\n",ifgs_sources)
     ifgs_sources_rows=ifgs_sources.shape[0]
+
+    with open(f"{file_path}/{fig_title}.pkl", 'wb') as f:
+        pickle.dump(ifgs_sources, f)
+    print(f"Saved {fig_title}.pkl")
+
     num_cols=15
     num_rows=int(np.ceil(ifgs_sources_rows/num_cols))
     fig1,axes=plt.subplots(num_rows,num_cols,figsize=(20,10))
@@ -74,6 +79,23 @@ def plot_mixtures_ifgs(phUnw, mask, file_path):
     plt.tight_layout()
     plt.close()
 
+def sliding_window_sum(array, window_size):
+    """
+    对数组的第一个维度进行滑动窗口求和
+    array (np.ndarray): 原始数组
+    window_size (int): 滑动窗口的大小
+    """
+    import numpy as np
+    # 获取原始数组的形状
+    original_shape = array.shape
+    # 计算新的形状
+    new_shape = (original_shape[0] - window_size + 1,) + original_shape[1:]
+    # 创建新数组
+    new_array = np.zeros(new_shape)
+    # 对第一个维度进行滑动窗口求和
+    for i in range(new_shape[0]):
+        new_array[i] = np.sum(array[i:i+window_size], axis=0)
+    return new_array
 
 def stacking_insar(sources, time_courses, source_number, mask, file_path, time_baselines, phUnw_mean,fig_title):
     '''
@@ -93,18 +115,20 @@ def stacking_insar(sources, time_courses, source_number, mask, file_path, time_b
     S = sources[source_number:source_number + 1]
     ifgs_sources = A @ S + phUnw_mean
 
-    # inc tbaselines
-    time_baselines_inc = np.diff(time_baselines)
-    time_baselines_inc=time_baselines_inc/365.25
+    #更改时间基线
+    # time_baselines=sliding_window_sum(time_baselines,10)
+    # ifgs_sources=sliding_window_sum(ifgs_sources,10)
 
+    time_baselines=time_baselines/365.25
     # stacking InSAR
     ph_sum = [0 for _ in range(len(ifgs_sources[0]))]
     t_sum = 0
-    for i, time_baseline in enumerate(time_baselines_inc):
+    for i, time_baseline in enumerate(time_baselines):
         ph_sum += time_baseline * ifgs_sources[i]
         t_sum += time_baseline ** 2
     ph_rate = ph_sum / t_sum
-    deformation_velocity = ph_rate * (-0.056 / (4 * np.pi)) * 1000 
+    # deformation_velocity = ph_rate 
+    deformation_velocity = ph_rate 
     deformation_velocity = np.array(deformation_velocity).reshape(1, -1)
 
     #fig_title = 'deformation_velocity'
@@ -120,3 +144,18 @@ def stacking_insar(sources, time_courses, source_number, mask, file_path, time_b
     plt.close()
 
     return deformation_velocity
+
+
+
+def calculate_APS(sources, time_courses, source_number, mask, phUnw_mean):
+    import numpy as np
+    from icasar.aux1 import col_to_ma
+
+    S=np.delete(sources,source_number,axis=0)
+    A=np.delete(time_courses,source_number,axis=1)
+    print("\nS:\n",S.shape)
+    print("\nA:\n",A.shape)
+    ifgs_sources=A@S+phUnw_mean
+    print("\nifgs_sources:\n",ifgs_sources.shape)
+
+    return ifgs_sources

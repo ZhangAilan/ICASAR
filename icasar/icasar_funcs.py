@@ -107,7 +107,7 @@ def ICASAR(n_comp, spatial_data = None, temporal_data = None, figures = "window"
 
 
     import matplotlib.pyplot as plt
-    plt.switch_backend('Qt5Agg')
+    # plt.switch_backend('Qt5Agg')
     import sys
     import pdb
     # print(f"\n\n\nDEBUG IMPORT\n\n\n")
@@ -509,6 +509,19 @@ def ICASAR(n_comp, spatial_data = None, temporal_data = None, figures = "window"
         plt.switch_backend('Qt5Agg')
 
     # 9: Save the results: 
+    # with open(out_folder / 'S_ica.pkl', 'wb') as f:
+    #     pickle.dump(S_ica, f)
+    # with open(out_folder / 'A_ica.pkl', 'wb') as f:
+    #     pickle.dump(A_ica_dc, f)
+    # with open(out_folder / 'S_pca.pkl', 'wb') as f:
+    #     pickle.dump(S_pca, f)
+    # with open(out_folder / 'A_pca.pkl', 'wb') as f:
+    #     pickle.dump(A_pca_dc, f)
+    # with open(out_folder / 'phUnw_mean.pkl', 'wb') as f:
+    #     pickle.dump(X_mean, f)
+    # print('\nSave the ica and pca results!\n')
+
+
     S_all_info = {'sources' : sources_all_r2,                                                                # package into a dict to return
                   'labels' : labels_hdbscan,
                   'xy' : xy_tsne       }
